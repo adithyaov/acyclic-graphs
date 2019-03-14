@@ -2,9 +2,9 @@
 
 module Prototype where
 
+import Data.List (sort)
 import Data.Set (Set, elems, filter, fromAscList, singleton, union)
 import qualified Data.Set as Set (empty)
-import Data.List (sort)
 
 class Graph g where
   type Vertex g
@@ -31,7 +31,8 @@ instance Ord a => Graph (Relation a) where
 
 -- | newtype Acyclic, similar to the coding practice described in the Alga paper
 newtype Acyclic a =
-  A (Relation a) deriving (Show)
+  A (Relation a)
+  deriving (Show)
 
 instance (Ord a) => Graph (Acyclic a) where
   type Vertex (Acyclic a) = a
@@ -55,8 +56,11 @@ instance (Ord a) => Eq (Acyclic a) where
 
 -- | Simple Examples
 e = empty :: Acyclic Int
+
 v = vertex :: Int -> Acyclic Int
+
 c = connect :: Acyclic Int -> Acyclic Int -> Acyclic Int
+
 o = overlay :: Acyclic Int -> Acyclic Int -> Acyclic Int
 
 allPossibleEdges :: [Int] -> Acyclic Int
