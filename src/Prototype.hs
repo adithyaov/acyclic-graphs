@@ -56,35 +56,30 @@ instance (Ord a) => Eq (Acyclic a) where
       edgeSet = Data.Set.filter (\(a, b) -> b > a) . relation
 
 -- | Simple example of file dependency
-graph :: Relation Char
+graph :: Relation String
 graph =
   overlay
     (overlay
        (overlay
-          (connect (vertex 'a') (vertex 'b'))
-          (connect (vertex 'b') (vertex 'd')))
-       (connect (vertex 'd') (vertex 'b')))
-    (connect (vertex 'd') (vertex 'c'))
+          (connect (vertex "A.hs") (vertex "B.hs"))
+          (connect (vertex "B.hs") (vertex "D.hs")))
+       (connect (vertex "D.hs") (vertex "B.hs")))
+    (connect (vertex "D.hs") (vertex "C.hs"))
 
--- | scc_ is the result of scc on graph
-scc_ :: Relation [Char]
-scc_ =
-  overlay
-    (connect (vertex ['a']) (vertex ['b', 'd']))
-    (connect (vertex ['b', 'd']) (vertex ['c']))
+circut [] = empty
+circut (x:xs) = foldr overlay empty $ zipWith connect (x:xs) (xs ++ [x])
 
 -- | unsafeTopSortRes is the result of applying unsafeTopSort on scc_ giving us topological ordering of the vertices. It is unsafe.
 unsafeTopSortRes =
-  [vertex ['a'], vertex ['b', 'd'], vertex ['c']] :: [Relation [Char]]
+  [vertex "A.hs", circut [vertex "B.hs", vertex "D.hs"], vertex "C.hs"] :: [Relation String]
 
 -- | Every graph should have a way to extract the edgeSet
 edgeSet =
-  [(vertex ['a'], vertex ['b', 'd']), (vertex ['b', 'd'], vertex ['c'])] :: [( Relation [Char]
-                                                                             , Relation [Char])]
+  [(vertex "A.hs", circut [vertex "B.hs", vertex "D.hs"]), (circut [vertex "B.hs", vertex "D.hs"], vertex "C.hs")] :: [(Relation String, Relation String)]
 
 newtype SimpleOrder a =
   SimpleOrder (Int, a)
-  deriving (Eq)
+  deriving (Eq, Show)
 
 instance (Eq a) => Ord (SimpleOrder a) where
   compare (SimpleOrder (x, _)) (SimpleOrder (y, _)) = compare x y
@@ -98,7 +93,7 @@ makeAsc n = reverse $ mA n
 mapTuple :: (a -> b) -> (a, a) -> (b, b)
 mapTuple f (a1, a2) = (f a1, f a2)
 
-scc :: Acyclic (SimpleOrder (Relation [Char]))
+scc :: Acyclic (SimpleOrder (Relation String))
 scc = overlay vertices edges
   where
     vList = zip (makeAsc $ length unsafeTopSortRes) unsafeTopSortRes
