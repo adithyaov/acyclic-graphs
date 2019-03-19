@@ -67,7 +67,7 @@ graph =
     (connect (vertex "D.hs") (vertex "C.hs"))
 
 circut [] = empty
-circut (x:xs) = foldr overlay empty $ zipWith connect (x:xs) (xs ++ [x])
+circut (x:xs) = foldr overlay empty $ zipWith connect (x : xs) (xs ++ [x])
 
 -- | unsafeTopSortRes is the result of applying unsafeTopSort on scc_ giving us topological ordering of the vertices. It is unsafe.
 unsafeTopSortRes =
@@ -75,7 +75,9 @@ unsafeTopSortRes =
 
 -- | Every graph should have a way to extract the edgeSet
 edgeSet =
-  [(vertex "A.hs", circut [vertex "B.hs", vertex "D.hs"]), (circut [vertex "B.hs", vertex "D.hs"], vertex "C.hs")] :: [(Relation String, Relation String)]
+  [ (vertex "A.hs", circut [vertex "B.hs", vertex "D.hs"])
+  , (circut [vertex "B.hs", vertex "D.hs"], vertex "C.hs")
+  ] :: [(Relation String, Relation String)]
 
 newtype SimpleOrder a =
   SimpleOrder (Int, a)
@@ -88,7 +90,7 @@ makeAsc :: Int -> [Int]
 makeAsc n = reverse $ mA n
   where
     mA 0 = []
-    mA k = k : (mA $ k - 1)
+    mA k = k : mA (k - 1)
 
 mapTuple :: (a -> b) -> (a, a) -> (b, b)
 mapTuple f (a1, a2) = (f a1, f a2)
@@ -101,7 +103,3 @@ scc = overlay vertices edges
     vertices = foldr (overlay . vertex . SimpleOrder) empty vList
     oriEdgeMapF = mapTuple (\x -> vertex . SimpleOrder $ (vLevels Map.! x, x))
     edges = foldr (overlay . uncurry connect . oriEdgeMapF) empty edgeSet
-
-
-
-
