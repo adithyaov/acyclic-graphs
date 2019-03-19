@@ -3,7 +3,8 @@
 module Prototype where
 
 import Data.List (sort)
-import Data.Set (Set, elems, filter, fromAscList, singleton, union)
+import qualified Data.Map.Strict as Map
+import Data.Set (Set, elems, filter, fromAscList, singleton, toList, union)
 import qualified Data.Set as Set (empty)
 
 class Graph g where
@@ -16,7 +17,7 @@ class Graph g where
 data Relation a = R
   { domain :: Set a
   , relation :: Set (a, a)
-  } deriving (Eq, Show)
+  } deriving (Eq, Show, Ord)
 
 instance Ord a => Graph (Relation a) where
   type Vertex (Relation a) = a
@@ -54,17 +55,58 @@ instance (Ord a) => Eq (Acyclic a) where
       vertexSet = domain
       edgeSet = Data.Set.filter (\(a, b) -> b > a) . relation
 
--- | Simple Examples
-e = empty :: Acyclic Int
+-- | Simple example of file dependency
+graph :: Relation Char
+graph =
+  overlay
+    (overlay
+       (overlay
+          (connect (vertex 'a') (vertex 'b'))
+          (connect (vertex 'b') (vertex 'd')))
+       (connect (vertex 'd') (vertex 'b')))
+    (connect (vertex 'd') (vertex 'c'))
 
-v = vertex :: Int -> Acyclic Int
+-- | scc_ is the result of scc on graph
+scc_ :: Relation [Char]
+scc_ =
+  overlay
+    (connect (vertex ['a']) (vertex ['b', 'd']))
+    (connect (vertex ['b', 'd']) (vertex ['c']))
 
-c = connect :: Acyclic Int -> Acyclic Int -> Acyclic Int
+-- | unsafeTopSortRes is the result of applying unsafeTopSort on scc_ giving us topological ordering of the vertices. It is unsafe.
+unsafeTopSortRes =
+  [vertex ['a'], vertex ['b', 'd'], vertex ['c']] :: [Relation [Char]]
 
-o = overlay :: Acyclic Int -> Acyclic Int -> Acyclic Int
+-- | Every graph should have a way to extract the edgeSet
+edgeSet =
+  [(vertex ['a'], vertex ['b', 'd']), (vertex ['b', 'd'], vertex ['c'])] :: [( Relation [Char]
+                                                                             , Relation [Char])]
 
-allPossibleEdges :: [Int] -> Acyclic Int
-allPossibleEdges = makeEdges . sort
+newtype SimpleOrder a =
+  SimpleOrder (Int, a)
+  deriving (Eq)
+
+instance (Eq a) => Ord (SimpleOrder a) where
+  compare (SimpleOrder (x, _)) (SimpleOrder (y, _)) = compare x y
+
+makeAsc :: Int -> [Int]
+makeAsc n = reverse $ mA n
   where
-    makeEdges [] = empty
-    makeEdges (x:xs) = o (foldr (o . c (v x) . v) e xs) $ makeEdges xs
+    mA 0 = []
+    mA k = k : (mA $ k - 1)
+
+mapTuple :: (a -> b) -> (a, a) -> (b, b)
+mapTuple f (a1, a2) = (f a1, f a2)
+
+scc :: Acyclic (SimpleOrder (Relation [Char]))
+scc = overlay vertices edges
+  where
+    vList = zip (makeAsc $ length unsafeTopSortRes) unsafeTopSortRes
+    vLevels = Map.fromList $ map (\(a, b) -> (b, a)) vList
+    vertices = foldr (overlay . vertex . SimpleOrder) empty vList
+    oriEdgeMapF = mapTuple (\x -> vertex . SimpleOrder $ (vLevels Map.! x, x))
+    edges = foldr (overlay . uncurry connect . oriEdgeMapF) empty edgeSet
+
+
+
+
