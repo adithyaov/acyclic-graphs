@@ -49,7 +49,7 @@ extra-source-files:  CHANGELOG.md
 
 library
   -- Modules exported by the library.
-  exposed-modules: Prototype
+  exposed-modules: Acyclic.Graph
                  , General.Graph
 
   -- Modules included in this library but not exported.

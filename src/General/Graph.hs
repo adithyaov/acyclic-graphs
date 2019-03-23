@@ -5,14 +5,18 @@ module General.Graph where
 import Data.List (sort)
 import Data.Set (Set, elems, filter, fromAscList, singleton, toList, union)
 import qualified Data.Set as Set (empty)
+import qualified Data.Map as M
 
--- Default class for a Graph as describes in the paper
+-- Default class for a Graph as described in the paper
 class Graph g where
   type Vertex g
   empty :: g
   vertex :: Vertex g -> g
   overlay :: g -> g -> g
   connect :: g -> g -> g
+-- Added functionality to get the basic information
+-- from any Graph.
+  adjMap :: g -> M.Map (Vertex g) [Vertex g]
 
 data Relation a = R
   { domain :: Set a
@@ -29,5 +33,9 @@ instance Ord a => Graph (Relation a) where
       (domain x `union` domain y)
       (relation x `union` relation y `union`
        fromAscList [(a, b) | a <- elems (domain x), b <- elems (domain y)])
+  adjMap g = foldr insert' defMap . toList . relation $ g
+    where
+      defMap = M.fromSet (const []) $ domain g
+      insert' (x, y) = M.insertWith (++) x [y]
 
 
