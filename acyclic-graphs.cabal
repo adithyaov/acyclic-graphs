@@ -53,7 +53,7 @@ library
                  , General.Graph
 
   -- Modules included in this library but not exported.
-  -- other-modules:
+  other-modules: Acyclic.Util
 
   -- LANGUAGE extensions used by modules in this package.
   -- other-extensions:

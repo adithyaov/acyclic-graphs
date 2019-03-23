@@ -3,9 +3,9 @@
 module General.Graph where
 
 import Data.List (sort)
+import qualified Data.Map as M
 import Data.Set (Set, elems, filter, fromAscList, singleton, toList, union)
 import qualified Data.Set as Set (empty)
-import qualified Data.Map as M
 
 -- Default class for a Graph as described in the paper
 class Graph g where
@@ -14,10 +14,10 @@ class Graph g where
   vertex :: Vertex g -> g
   overlay :: g -> g -> g
   connect :: g -> g -> g
--- Added functionality to get the basic information
--- from any Graph.
   adjMap :: g -> M.Map (Vertex g) [Vertex g]
 
+-- Added functionality to get the basic information
+-- from any Graph.
 data Relation a = R
   { domain :: Set a
   , relation :: Set (a, a)
@@ -37,5 +37,3 @@ instance Ord a => Graph (Relation a) where
     where
       defMap = M.fromSet (const []) $ domain g
       insert' (x, y) = M.insertWith (++) x [y]
-
-
