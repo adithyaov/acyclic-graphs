@@ -53,7 +53,7 @@ Utility function for describing acyclic graphs, to be used in Acyclic.Graph.
 This is a simple prototype to show functionality. 
 
 1. **graph**
-    - This is treated as the result of an `scc` operation of the following graph. `A * B + B * D + D * B + D * C` is the strongly connected component and the the result of the scc is the following graph, `[[A], []] * [[B, D], [(B, D), (D, B)]] + [[B, D], [(B, D), (D, B)]] * [[C], []]` (Note that the vertices of the new graph are graphs).
+    - This is treated as the result of an `scc` operation of the following graph, `A * B + B * D + D * B + D * C`. `B` and `D` form a strongly connected component and the the result of the scc is the following graph, `[[A], []] * [[B, D], [(B, D), (D, B)]] + [[B, D], [(B, D), (D, B)]] * [[C], []]` (Note that the vertices of the new graph are graphs).
 
 2. **acyclicGraph**
     - This is the result of applying `unsafeConvertToAcyclic` to `graph`.
