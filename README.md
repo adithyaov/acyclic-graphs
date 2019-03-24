@@ -21,6 +21,7 @@ This module contains classes and a default instance of that class to represent a
 
 1. **class Graph**
     - This class is similar to one defined in the paper with an added function signature, `adjMap :: Map (Vertex g) [Vertex g]`. This is a simple canonical representation of a graph.
+
 2. **data Relation**
     - This is similar to the `Relation` data type defined in the paper. A simple representation of a graph for this prototype.
 
