@@ -10,8 +10,9 @@ Consider a set of graphs in which edges only exist from a lower ordered vertex t
 
 Now consider two operations on the set, `*` and `+` (connect and overlay),  
 `+` has the same properties as mentioned in the paper  
-`*` is slightly different, for any 2 acyclic graphs in the set `g1 (v1, e1)` and `g2 (v2, e2)`, `g1 * g2 = g3 (v3, e3)` where `v3 = v1 *union* v2 and e3 = e1 *union* e2 *union* [(x, y) where y > x, x *belongs to* v1 and y *belongs to* v2]`  
+`*` is slightly different, for any two acyclic graphs in the set, `g1 (v1, e1)` and `g2 (v2, e2)`, `g1 * g2 = g3 (v3, e3)` where `v3 = v1 *union* v2 and e3 = e1 *union* e2 *union* [(x, y) where y > x, x *belongs to* v1 and y *belongs to* v2]`  
 Basically `g1 * g2` connects all the lower vertices in `g1` to higher counterparts in `g2`.
+Note that this representation is algebrically anologous to a semi-ring.
 
 ### Modules and important functions/classes
 
