@@ -17,14 +17,14 @@ newtype AcyclicRelation a =
   deriving (Show)
 
 instance (Ord a) => Graph (AcyclicRelation a) where
-  type Vertex (Acyclic a) = a
+  type Vertex (AcyclicRelation a) = a
   empty = A empty
   vertex = A . vertex
   overlay (A x) (A y) = A $ overlay x y
   connect (A x) (A y) = A $ R (domain genRes) newRelation
     where
       genRes = connect x y
-      newRelation = S.filter (uncurry (>)) $ relation genRes
+      newRelation = S.filter (uncurry (<)) $ relation genRes
   adjMap (A g) = adjMap g
 
 -- This is not really required as we are filtering the
@@ -33,7 +33,7 @@ instance (Ord a) => Eq (AcyclicRelation a) where
   (A g1) == (A g2) = vertexSet g1 == vertexSet g2 && edgeSet g1 == edgeSet g2
     where
       vertexSet = domain
-      edgeSet = S.filter (uncurry (>)) . relation
+      edgeSet = S.filter (uncurry (<)) . relation
 
 -- Important function to glance upon, The result of `scc` should
 -- unsafely convert the result to Acyclic. Whenever a graph results
