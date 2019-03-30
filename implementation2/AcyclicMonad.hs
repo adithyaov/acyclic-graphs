@@ -6,28 +6,18 @@ type Vertex = Int
 
 -- eg. Edges 4 [2, 3] (Edges 3 [1] (Edges 2 [1] (Edges 1 [] Nil)))
 -- represents 4 * 2 + 4 * 3 + 3 * 1 + 2 * 1 + 1
-data DAG
-  = Cons Vertex
-         [Vertex]
-         DAG
+data DAG a
+  = Cons a
+         [DAG a]
+         (DAG a)
   | Nil
   deriving (Show)
 
--- A simple helper function
-vertex (Cons i _ _) = i
-vertex Nil = 0
-
--- A modification of the state when a singleton vertex is added
-addSingleton s = Cons (1 + vertex s) [] s
-
--- A modification of the state when a vertex with edges is added
-addEdges es s = Cons (1 + vertex s) (map vertex es) s
-
 -- A State monad creating a singleton
-singleton = modify addSingleton >> get
+singleton a = modify (Cons a []) >> get
 
 -- A State monad resulting in proper edges
-edgeTo es = modify (addEdges es) >> get
+edgeTo a es = modify (Cons a es) >> get
 
 -- A simple function to run the state to get DAG in return
 dag = snd . flip runState Nil
@@ -35,6 +25,7 @@ dag = snd . flip runState Nil
 -- The result : DAG 3 [1,2] (DAG 2 [] (DAG 1 [] Nil))
 dagTest =
   dag $ do
-    v1 <- singleton
-    v2 <- singleton
-    edgeTo [v1, v2]
+    v1 <- singleton 1
+    v2 <- singleton 2
+    3 `edgeTo` [v1, v2]
+
