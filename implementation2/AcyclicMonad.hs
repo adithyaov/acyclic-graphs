@@ -18,10 +18,10 @@ vertex (Cons i _ _) = i
 vertex Nil = 0
 
 -- A State monad creating a singleton
-singleton = modify (Cons (1 + vertex s) []) >> get
+singleton = modify (\s -> Cons (1 + vertex s) [] s) >> get
 
 -- A State monad resulting in proper edges
-edgeTo es = modify (Cons (1 + vertex s) es) >> get
+edgeTo es = modify (\s -> Cons (1 + vertex s) es s) >> get
 
 -- A simple function to run the state to get DAG in return
 dag = snd . flip runState Nil
