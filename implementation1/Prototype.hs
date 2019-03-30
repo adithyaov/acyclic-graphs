@@ -4,17 +4,14 @@ import Acyclic.Graph
 import Acyclic.Util
 import General.Graph
 
+connect' x y = connect (vertex x) (vertex y)
+
 -- | Simple example of file dependency
-graph :: Relation (Relation String)
-graph =
-  overlay
-    (connect (vertex $ vertex "A.hs") (vertex $ circut [vertex "B.hs", vertex "D.hs"]))
-    (connect (vertex $ circut [vertex "B.hs", vertex "D.hs"]) (vertex $ vertex "D.hs"))
+graph :: Relation Int
+graph = overlay (overlay (connect' 1 2) (connect' 2 3)) (connect' 3 1)
 
-circut [] = empty
-circut (x:xs) = foldr overlay empty $ zipWith connect (x : xs) (xs ++ [x])
 
-acyclicGraph :: AcyclicRelation (SimpleOrder (Relation String))
+acyclicGraph :: AcyclicRelation (SimpleOrder Int)
 acyclicGraph = unsafeConvertToAcyclic graph
 
 -- The functions which result in an acyclic graph should

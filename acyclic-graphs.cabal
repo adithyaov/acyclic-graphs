@@ -52,6 +52,7 @@ library
   exposed-modules: Acyclic.Graph
                  , General.Graph
                  , Prototype
+                 , AcyclicMonad
 
   -- Modules included in this library but not exported.
   other-modules: Acyclic.Util
@@ -62,9 +63,10 @@ library
   -- Other library packages from which modules are imported.
   build-depends:       base ^>=4.10.1.0
                      , containers
+                     , transformers
 
   -- Directories containing source files.
-  hs-source-dirs:      src
+  hs-source-dirs:      implementation1 implementation2
 
   -- Base language which the package is written in.
   default-language:    Haskell2010
