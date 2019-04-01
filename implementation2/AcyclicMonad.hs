@@ -4,12 +4,14 @@ import Control.Monad.Trans.State.Strict
 
 type Vertex = Int
 
+newtype DAG = DAG DAG' deriving Show
+
 -- eg. Edges 4 [2, 3] (Edges 3 [1] (Edges 2 [1] (Edges 1 [] Nil)))
 -- represents 4 * 2 + 4 * 3 + 3 * 1 + 2 * 1 + 1
-data DAG
+data DAG'
   = Cons Vertex
-         [DAG]
-         DAG
+         [DAG']
+         DAG'
   | Nil
   deriving (Show)
 
@@ -24,7 +26,7 @@ singleton = modify (\s -> Cons (1 + vertex s) [] s) >> get
 edgeTo es = modify (\s -> Cons (1 + vertex s) es s) >> get
 
 -- A simple function to run the state to get DAG in return
-dag = snd . flip runState Nil
+dag = DAG . snd . flip runState Nil
 
 -- The result : DAG 3 [1..DAG,2..DAG] (DAG 2 [] (DAG 1 [] Nil))
 dagTest =
@@ -32,3 +34,7 @@ dagTest =
     v1 <- singleton
     v2 <- singleton
     edgeTo [v1, v2]
+
+
+
+
