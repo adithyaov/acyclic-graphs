@@ -1,5 +1,3 @@
-**Note** : This README.md is only for `implementation1`. I will update the README.md with further information later.
-
 # Extending Alga - Acyclic Graphs
 
 ### Monadic representation of Acyclic Graphs (implementation 2)
