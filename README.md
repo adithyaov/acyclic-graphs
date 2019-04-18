@@ -1,5 +1,22 @@
 # Extending Alga - Acyclic Graphs
 
+### Monadic representation of Acyclic Graphs (implementation 2)
+This is a very simple yet effective implementation of acyclic graphs using Monads.
+
+3 important functions,
+
+`dag :: State DAG' -> DAG`
+
+`singleton :: State DAG' DAG'`
+
+`edgeTo :: [DAG'] -> State DAG' DAG'`
+
+How should you read `DAG' v [e1, e2] d`?
+
+One should read this as, this is a directed acyclic graph where the vertex identified by `v` has its edges to `e1` and `e2` in the acyclic graph defined in `d`. One can further go through `d` in the same way.
+
+We build the acyclic graph incrementally.
+
 ### Representation of Acyclic Graphs
 
 Please go through the [Alga paper](https://dl.acm.org/authorize?N46678) before proceeding as some of the terminology used is taken from the paper.
