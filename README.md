@@ -13,7 +13,7 @@ This is a very simple yet effective implementation of acyclic graphs using Monad
 
 How should you read `DAG' v [e1, e2] d`?
 
-One should read this as, this is a directed acyclic graph where the vertex identified by `v` has its edges to `e1` and `e2` in the acyclic graph defined in `d`. One can further go through `d` in the same way.
+`DAG' v [e1, e2] d` is a directed acyclic graph where the vertex identified by `v` has its edges to `e1` and `e2` in the acyclic graph defined in `d`. One can further go through `d` in the same way.
 
 We build the acyclic graph incrementally.
 
